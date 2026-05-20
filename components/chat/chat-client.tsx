@@ -143,53 +143,76 @@ export function ChatClient() {
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[360px_1fr]">
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-medium text-white/70">Model</label>
-            <Select
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              aria-label="Model"
-            >
-              {allModels.map((m) => (
-                <option key={m.id} value={m.id} className="bg-black">
-                  {m.name} — {m.provider}
-                </option>
-              ))}
-            </Select>
-            <p className="text-xs leading-5 text-white/55">
-              Tip: switch models for different coding styles (fast vs deep
-              reasoning).
-            </p>
-          </div>
+          <div className="grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-white/70">
+                  AI model
+                </label>
+                <Select
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  aria-label="Model"
+                >
+                  {allModels.map((m) => (
+                    <option key={m.id} value={m.id} className="bg-black">
+                      {m.name} — {m.provider}
+                    </option>
+                  ))}
+                </Select>
+                <p className="text-xs leading-5 text-white/55">
+                  Tip: switch models for different coding styles (speed vs deep
+                  reasoning).
+                </p>
+              </div>
 
-          <div className="mt-5 rounded-2xl border border-white/10 bg-black/40 p-4">
-            <div className="text-xs font-medium text-white/70">
-              Custom model (OpenRouter ID)
-            </div>
-            <p className="mt-1 text-xs leading-5 text-white/55">
-              Paste any model id like <span className="font-mono text-white/80">anthropic/claude-3-haiku</span>{" "}
-              or <span className="font-mono text-white/80">~google/gemini-pro-latest</span>.
-            </p>
-            <div className="mt-3 flex flex-col gap-2">
-              <input
-                value={customModelId}
-                onChange={(e) => setCustomModelId(e.target.value)}
-                placeholder="provider/model"
-                className="h-11 w-full rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
-              />
-              <input
-                value={customModelName}
-                onChange={(e) => setCustomModelName(e.target.value)}
-                placeholder="Optional display name"
-                className="h-11 w-full rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
-              />
-              <Button
-                onClick={addCustomModel}
-                disabled={!customModelId.trim()}
-                className="h-11"
-              >
-                Add & Select
-              </Button>
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-white/70">
+                  Custom model
+                </label>
+
+                <div className="flex gap-2">
+                  <input
+                    value={customModelId}
+                    onChange={(e) => setCustomModelId(e.target.value)}
+                    placeholder="provider/model"
+                    className="h-11 w-full rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                  />
+                  <Button
+                    onClick={addCustomModel}
+                    disabled={!customModelId.trim()}
+                    className="h-11 whitespace-nowrap px-4"
+                    variant="secondary"
+                  >
+                    Add
+                  </Button>
+                </div>
+
+                <details className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                  <summary className="cursor-pointer select-none text-xs text-white/65">
+                    Optional: custom display name
+                  </summary>
+                  <div className="mt-2">
+                    <input
+                      value={customModelName}
+                      onChange={(e) => setCustomModelName(e.target.value)}
+                      placeholder="Display name (optional)"
+                      className="h-10 w-full rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                    />
+                    <p className="mt-2 text-xs leading-5 text-white/55">
+                      Examples:{" "}
+                      <span className="font-mono text-white/80">
+                        anthropic/claude-3-haiku
+                      </span>{" "}
+                      or{" "}
+                      <span className="font-mono text-white/80">
+                        ~google/gemini-pro-latest
+                      </span>
+                      .
+                    </p>
+                  </div>
+                </details>
+              </div>
             </div>
           </div>
 

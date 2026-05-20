@@ -24,7 +24,7 @@ export const GRATACA_MODELS: GratacaModel[] = [
     bestFor: ["general coding", "debugging", "fast iterations"],
   },
   {
-    id: "google/gemini-1.5-pro",
+    id: "google/gemini-pro-1.5",
     name: "Gemini 1.5 Pro",
     provider: "Google",
     bestFor: ["large context", "multi-file reasoning"],
@@ -36,12 +36,11 @@ export const GRATACA_MODELS: GratacaModel[] = [
     bestFor: ["open model", "coding", "cost-effective"],
   },
   {
-    id: "deepseek/deepseek-coder",
-    name: "DeepSeek Coder",
+    id: "deepseek/deepseek-chat-v3.1",
+    name: "DeepSeek V3.1",
     provider: "DeepSeek",
     bestFor: ["coding", "autocomplete", "snippets"],
   },
 ];
 
 export const DEFAULT_MODEL_ID = GRATACA_MODELS[0]?.id ?? "openai/gpt-4o";
-

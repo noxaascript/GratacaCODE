@@ -1,0 +1,68 @@
+name: Unzip project
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "*.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Unzip to repo root
+        shell: bash
+        run: |
+          set -e
+          ZIP="$(ls -1 *.zip | head -n 1 || true)"
+          if [ -z "$ZIP" ]; then
+            echo "No zip found in repo root."
+            exit 0
+          fi
+
+          # If already extracted (package.json exists), stop.
+          if [ -f package.json ]; then
+            echo "package.json already exists, skipping unzip."
+            exit 0
+          fi
+
+          rm -rf _tmp_extract
+          mkdir -p _tmp_extract
+          unzip -q "$ZIP" -d _tmp_extract
+
+          # If the zip contains a single top folder, use it; else use the extract root.
+          top_count="$(find _tmp_extract -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
+          file_count="$(find _tmp_extract -mindepth 1 -maxdepth 1 -type f | wc -l | tr -d ' ')"
+
+          SRC="_tmp_extract"
+          if [ "$top_count" -eq 1 ] && [ "$file_count" -eq 0 ]; then
+            SRC="$(find _tmp_extract -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+          fi
+
+          shopt -s dotglob
+          mv "$SRC"/* . || true
+          shopt -u dotglob
+
+          rm -rf _tmp_extract "$ZIP"
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "Unzip project into repo"
+            git push
+          else
+            echo "No changes to commit."
+          fi

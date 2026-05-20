@@ -11,11 +11,11 @@ export type GratacaModel = {
 // OpenRouter model ids: https://openrouter.ai/models
 export const GRATACA_MODELS: GratacaModel[] = [
   {
-    id: "anthropic/claude-3.5-sonnet",
-    name: "Claude 3.5 Sonnet",
+    id: "anthropic/claude-3.5-haiku",
+    name: "Claude 3.5 Haiku",
     provider: "Anthropic",
-    bestFor: ["refactor", "architecture", "reasoning"],
-    notes: "Excellent for complex coding tasks.",
+    bestFor: ["fast coding", "iteration", "cost-effective"],
+    notes: "Fast Claude model (works more reliably for many accounts).",
   },
   {
     id: "openai/gpt-4o",
@@ -24,10 +24,10 @@ export const GRATACA_MODELS: GratacaModel[] = [
     bestFor: ["general coding", "debugging", "fast iterations"],
   },
   {
-    id: "google/gemini-pro-1.5",
-    name: "Gemini 1.5 Pro",
+    id: "~google/gemini-pro-latest",
+    name: "Gemini Pro Latest",
     provider: "Google",
-    bestFor: ["large context", "multi-file reasoning"],
+    bestFor: ["google pro", "general coding", "long context"],
   },
   {
     id: "meta-llama/llama-3.1-70b-instruct",
@@ -43,4 +43,4 @@ export const GRATACA_MODELS: GratacaModel[] = [
   },
 ];
 
-export const DEFAULT_MODEL_ID = GRATACA_MODELS[0]?.id ?? "openai/gpt-4o";
+export const DEFAULT_MODEL_ID = "openai/gpt-4o";

@@ -8,10 +8,36 @@ import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DEFAULT_MODEL_ID, GRATACA_MODELS } from "@/lib/models";
+import { DEFAULT_MODEL_ID, GRATACA_MODELS, type GratacaModel } from "@/lib/models";
 
 type Role = "user" | "assistant" | "system";
 type ChatMessage = { role: Role; content: string };
+
+const CUSTOM_MODELS_KEY = "grataca_custom_models_v1";
+
+function loadCustomModels(): GratacaModel[] {
+  try {
+    const raw = localStorage.getItem(CUSTOM_MODELS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((m) => m && typeof m.id === "string" && typeof m.name === "string")
+      .map((m) => ({
+        id: String(m.id),
+        name: String(m.name),
+        provider: typeof m.provider === "string" ? String(m.provider) : "Custom",
+        bestFor: Array.isArray(m.bestFor) ? m.bestFor.map(String) : ["custom"],
+        notes: typeof m.notes === "string" ? String(m.notes) : undefined,
+      }));
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomModels(models: GratacaModel[]) {
+  localStorage.setItem(CUSTOM_MODELS_KEY, JSON.stringify(models));
+}
 
 export function ChatClient() {
   const searchParams = useSearchParams();
@@ -19,6 +45,9 @@ export function ChatClient() {
     searchParams.get("model")?.trim() || DEFAULT_MODEL_ID;
 
   const [model, setModel] = React.useState(initialModel);
+  const [customModels, setCustomModels] = React.useState<GratacaModel[]>([]);
+  const [customModelId, setCustomModelId] = React.useState("");
+  const [customModelName, setCustomModelName] = React.useState("");
   const [messages, setMessages] = React.useState<ChatMessage[]>([
     {
       role: "system",
@@ -31,6 +60,31 @@ export function ChatClient() {
   const [error, setError] = React.useState<string | null>(null);
 
   const displayMessages = messages.filter((m) => m.role !== "system");
+  const allModels = React.useMemo(() => {
+    const map = new Map<string, GratacaModel>();
+    for (const m of GRATACA_MODELS) map.set(m.id, m);
+    for (const m of customModels) map.set(m.id, m);
+    return Array.from(map.values());
+  }, [customModels]);
+
+  React.useEffect(() => {
+    setCustomModels(loadCustomModels());
+  }, []);
+
+  function addCustomModel() {
+    const id = customModelId.trim();
+    if (!id) return;
+    const name = customModelName.trim() || id;
+    const next = [
+      ...customModels.filter((m) => m.id !== id),
+      { id, name, provider: "Custom", bestFor: ["custom"] },
+    ];
+    setCustomModels(next);
+    saveCustomModels(next);
+    setModel(id);
+    setCustomModelId("");
+    setCustomModelName("");
+  }
 
   async function send() {
     const text = input.trim();
@@ -96,7 +150,7 @@ export function ChatClient() {
               onChange={(e) => setModel(e.target.value)}
               aria-label="Model"
             >
-              {GRATACA_MODELS.map((m) => (
+              {allModels.map((m) => (
                 <option key={m.id} value={m.id} className="bg-black">
                   {m.name} — {m.provider}
                 </option>
@@ -106,6 +160,37 @@ export function ChatClient() {
               Tip: switch models for different coding styles (fast vs deep
               reasoning).
             </p>
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-white/10 bg-black/40 p-4">
+            <div className="text-xs font-medium text-white/70">
+              Custom model (OpenRouter ID)
+            </div>
+            <p className="mt-1 text-xs leading-5 text-white/55">
+              Paste any model id like <span className="font-mono text-white/80">anthropic/claude-3-haiku</span>{" "}
+              or <span className="font-mono text-white/80">~google/gemini-pro-latest</span>.
+            </p>
+            <div className="mt-3 flex flex-col gap-2">
+              <input
+                value={customModelId}
+                onChange={(e) => setCustomModelId(e.target.value)}
+                placeholder="provider/model"
+                className="h-11 w-full rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+              />
+              <input
+                value={customModelName}
+                onChange={(e) => setCustomModelName(e.target.value)}
+                placeholder="Optional display name"
+                className="h-11 w-full rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+              />
+              <Button
+                onClick={addCustomModel}
+                disabled={!customModelId.trim()}
+                className="h-11"
+              >
+                Add & Select
+              </Button>
+            </div>
           </div>
 
           <div className="mt-5 rounded-2xl border border-white/10 bg-black/40 p-4">
@@ -183,4 +268,3 @@ export function ChatClient() {
     </Container>
   );
 }
-

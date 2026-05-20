@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+:root {
+  /* Black & white theme */
+  --background: #000000;
+  --foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.65);
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-2: rgba(255, 255, 255, 0.09);
+  --border: rgba(255, 255, 255, 0.12);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Better default text rendering */
+::selection {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Markdown/code */
+.prose-invert {
+  color: rgba(255, 255, 255, 0.88);
+}
+.prose-invert a {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.prose-invert code {
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.prose-invert pre {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.85rem;
+  padding: 1rem;
+  overflow: auto;
+}
+.prose-invert pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* Highlight.js in monochrome */
+.hljs {
+  color: rgba(255, 255, 255, 0.92);
+}
+.hljs-comment,
+.hljs-quote {
+  color: rgba(255, 255, 255, 0.45);
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+.hljs-string,
+.hljs-title,
+.hljs-name,
+.hljs-type,
+.hljs-attribute,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-built_in,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: rgba(255, 255, 255, 0.8);
+}
+.hljs-number,
+.hljs-literal {
+  color: rgba(255, 255, 255, 0.75);
+}
+.hljs-deletion,
+.hljs-meta {
+  color: rgba(255, 255, 255, 0.6);
+}

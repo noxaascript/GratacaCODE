@@ -1,0 +1,12 @@
+import { Suspense } from "react";
+
+import { ChatClient } from "@/components/chat/chat-client";
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-white/70">Loading…</div>}>
+      <ChatClient />
+    </Suspense>
+  );
+}
+
